@@ -9,3 +9,10 @@ seaborn
 matplotlib
 numpy
 scikit-learn
+fastapi 
+sqlalchemy 
+uvicorn
+pydantic
+joblib
+python-dotenv 
+pytest
