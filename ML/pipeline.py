@@ -33,7 +33,7 @@ def model_pipeline(num_cols, model):
         withMean=True
     )
     
-    # Configurer le modèle pour utiliser les colonnes correctes
+    # Configurer le modele pour utiliser les colonnes correctes
     model.setFeaturesCol("features")
     model.setLabelCol("label")
     model.setPredictionCol("prediction")
@@ -41,7 +41,7 @@ def model_pipeline(num_cols, model):
     return Pipeline(stages=[assembler, scaler, model])
 
 
-# Metriques d'evaluation 
+# Metriques d'evaluation
 
 def metric_model(predictions):
     

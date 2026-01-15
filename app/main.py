@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException,Depends
 from .database import Base, engine, get_db
-from sqlalchemy.orm import session
+from sqlalchemy.orm import Session
+from sqlalchemy import text
 from app.models.schema import UserCreate, UserResponse, UserVerify, output_predict, User_request
 from app.models.model import User
 from .auth import create_token, verify_password, verify_token, hache_password
@@ -16,7 +17,7 @@ Base.metadata.create_all(bind=engine)
 
 # creation d'un username :
 @app.post("/register", response_model=UserResponse)
-def create_user(user:UserCreate, db: session=Depends(get_db)):
+def create_user(user:UserCreate, db: Session=Depends(get_db)):
     exist = db.query(User).filter(User.username == user.username).first()
 
     if exist:
@@ -37,7 +38,7 @@ def create_user(user:UserCreate, db: session=Depends(get_db)):
 
 # verifier l'identifiant et encoder token
 @app.post("/login")
-def login(user:UserVerify, db: session=Depends(get_db)):
+def login(user:UserVerify, db: Session=Depends(get_db)):
 
     db_user = db.query(User).filter(
         User.username == user.username
@@ -57,3 +58,37 @@ def login(user:UserVerify, db: session=Depends(get_db)):
 def predict(data: User_request, user: dict=Depends(verify_token)):
     duration = predict(data)
     return {"estimated_duration:", duration}
+
+
+
+
+
+# la durée moyenne des trajets par heure
+
+@app.post("/analytics/avg_duration_by_hour")
+def avg_duration_by_hour(db: Session = Depends(get_db), user: str = Depends(verify_token)):
+    
+    sql = text("""
+        SELECT 
+            EXTRACT(HOUR FROM tpep_pickup_datetime) AS hour, 
+            AVG(duration_minutes) AS average_duration
+        FROM taxi_trips_silver
+        GROUP BY hour
+        ORDER BY hour ASC
+    """)
+    
+    result_data = db.execute(sql)
+    
+    final_results = []
+    for row in result_data:
+        dictionary = {
+            "hour": row.hour,
+            "average_duration": round(row.average_duration, 2)
+        }
+        final_results.append(dictionary)
+    
+    return final_results
+
+
+
+
