@@ -1,15 +1,16 @@
 from fastapi import FastAPI, HTTPException,Depends
-from app.database import Base, engine, get_db
+from .database import Base, engine, get_db
 from sqlalchemy.orm import session
-from app.models.schema import UserCreate, UserResponse, UserVerify
+from app.models.schema import UserCreate, UserResponse, UserVerify, output_predict, User_request
 from app.models.model import User
 from .auth import create_token, verify_password, verify_token, hache_password
+from .services.service_prediction import predict
 
 
 
 
 app = FastAPI()
-Base.metadata.create_all(bin=engine)
+Base.metadata.create_all(bind=engine)
 
 
 
@@ -50,3 +51,9 @@ def login(user:UserVerify, db: session=Depends(get_db)):
     return {"token" : token}
 
 
+# creation d'endpoint de prediction
+
+@app.post("/predict", response_model=output_predict)
+def predict(data: User_request, user: dict=Depends(verify_token)):
+    duration = predict(data)
+    return {"estimated_duration:", duration}
