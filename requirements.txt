@@ -16,3 +16,5 @@ pydantic
 joblib
 python-dotenv 
 pytest
+python_jose
+passlib[argon2]
