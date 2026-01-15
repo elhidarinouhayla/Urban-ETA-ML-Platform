@@ -1,11 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from config import USER, PASSWORD, PORT, HOST, DATABASE
+from urllib.parse import quote_plus
+from .config import USER, PASSWORD, PORT, HOST, DATABASE
 
+# Encoder le mot de passe pour gerer les caractères speciaux
+encoded_password = quote_plus(PASSWORD)
 
-
-DATABASE_URL = f"postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}"
+DATABASE_URL = f"postgresql+psycopg2://{USER}:{encoded_password}@{HOST}:{PORT}/{DATABASE}"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
@@ -18,4 +20,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
