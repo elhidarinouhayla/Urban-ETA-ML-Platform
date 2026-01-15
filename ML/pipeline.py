@@ -6,11 +6,11 @@ from pyspark.ml.evaluation import RegressionEvaluator
 
 # split du data 
 
-def split_data(df_silver, target, test_size=0.2, random_state=42):
+def split_data(df_bronze, target, test_size=0.2, random_state=42):
     
-    df_silver = df_silver.withColumnRenamed(target, "label")
+    df_bronze = df_bronze.withColumnRenamed(target, "label")
 
-    train_df, test_df = df_silver.randomSplit([1-test_size, test_size], seed=random_state)
+    train_df, test_df = df_bronze.randomSplit([1-test_size, test_size], seed=random_state)
     
     return train_df, test_df
 
