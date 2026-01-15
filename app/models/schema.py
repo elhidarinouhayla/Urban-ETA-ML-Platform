@@ -19,13 +19,13 @@ class UserResponse(UserCreate):
 
 
 class User_request(BaseModel):
-    trip_distance : int
+    trip_distance : float
     RatecodeID :  int
-    fare_amount : int
-    tip_amount :  int
-    tolls_amount : int
-    total_amount : int
-    Airport_fee : int
+    fare_amount : float
+    tip_amount :  float
+    tolls_amount : float
+    total_amount : float
+    Airport_fee : float
     pickup_hour : int
     month : int
 
