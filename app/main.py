@@ -92,3 +92,29 @@ def avg_duration_by_hour(db: Session = Depends(get_db), user: str = Depends(veri
 
 
 
+# Comparaison durée moyenne par type de paiement
+
+@app.post("/analytics/payment_analysis")
+def payment_analysis(db: Session = Depends(get_db), user: str = Depends(verify_token)):
+    
+    sql = text("""
+        SELECT 
+            payment_type, 
+            COUNT(*) AS total_trips, 
+            AVG(duration_minutes) AS average_duration
+        FROM taxi_trips_silver
+        GROUP BY payment_type
+    """)
+    
+    result_data = db.execute(sql)
+    
+    final_results = []
+    for row in result_data:
+        data_item = {
+            "payment_type": row.payment_type,
+            "total_trips": row.total_trips,
+            "average_duration": round(row.average_duration, 2)
+        }
+        final_results.append(data_item)
+        
+    return final_results
