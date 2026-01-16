@@ -13,7 +13,8 @@ spark = SparkSession.builder \
 print(":white_check_mark: Spark session créée avec succès")
 
 
-jdbc_url = "jdbc:postgresql://localhost:5433/silver_data"
+jdbc_url = "jdbc:postgresql://" \
+"localhost:5432/silver_data"
 connection_properties = {
     "user": "silver_user",
     "password": "silver_pass123",

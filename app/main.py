@@ -55,9 +55,12 @@ def login(user:UserVerify, db: Session=Depends(get_db)):
 # creation d'endpoint de prediction
 
 @app.post("/predict", response_model=output_predict)
-def predict(data: User_request, user: dict=Depends(verify_token)):
-    duration = predict(data)
-    return {"estimated_duration:", duration}
+def prediction(data: User_request):
+
+    df = data.dict()
+    duration = predict(df)
+
+    return {"duration_log": duration}
 
 
 
@@ -66,13 +69,13 @@ def predict(data: User_request, user: dict=Depends(verify_token)):
 # la durée moyenne des trajets par heure
 
 @app.post("/analytics/avg_duration_by_hour")
-def avg_duration_by_hour(db: Session = Depends(get_db), user: str = Depends(verify_token)):
+def avg_duration_by_hour(db: Session = Depends(get_db)):
     
     sql = text("""
         SELECT 
-            EXTRACT(HOUR FROM tpep_pickup_datetime) AS hour, 
+            EXTRACT(HOUR FROM pickup_hour) AS hour, 
             AVG(duration_minutes) AS average_duration
-        FROM taxi_trips_silver
+        FROM silver_table
         GROUP BY hour
         ORDER BY hour ASC
     """)
@@ -95,7 +98,7 @@ def avg_duration_by_hour(db: Session = Depends(get_db), user: str = Depends(veri
 # Comparaison durée moyenne par type de paiement
 
 @app.post("/analytics/payment_analysis")
-def payment_analysis(db: Session = Depends(get_db), user: str = Depends(verify_token)):
+def payment_analysis(db: Session = Depends(get_db)):
     
     sql = text("""
         SELECT 

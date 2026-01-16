@@ -23,8 +23,8 @@ def verify_token(token: str = Header(...)):
 
 password_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
-def hache_password(password):
-    return password_context.hash(password)
+def hache_password(password: str):
+    return password_context.hash(str(password))
 
 def verify_password(password,hash_password):
     return password_context.verify(password,hash_password)

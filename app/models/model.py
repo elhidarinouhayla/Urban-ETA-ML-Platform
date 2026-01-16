@@ -10,6 +10,6 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, nullable=False)
     email = Column(String, nullable=False)
-    password = Column(Integer, nullable=False)
+    password = Column(String, nullable=False)
     create_at = Column(DateTime, default=datetime.now)
 

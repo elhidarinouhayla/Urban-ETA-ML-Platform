@@ -4,12 +4,12 @@ from pydantic import BaseModel
 class UserCreate(BaseModel):
     username : str
     email : str
-    password : int
+    password : str
 
 
 class UserVerify(BaseModel):
     username : str
-    password : int
+    password : str
 
 class UserResponse(UserCreate):
     id : int
@@ -31,4 +31,4 @@ class User_request(BaseModel):
 
 
 class output_predict(BaseModel):
-   duration_log : str
+   duration_log : float
