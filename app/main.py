@@ -55,7 +55,7 @@ def login(user:UserVerify, db: Session=Depends(get_db)):
 # creation d'endpoint de prediction
 
 @app.post("/predict", response_model=output_predict)
-def prediction(data: User_request):
+def prediction(data: User_request, user: dict=Depends(verify_token)):
 
     df = data.dict()
     duration = predict(df)
@@ -69,15 +69,15 @@ def prediction(data: User_request):
 # la durée moyenne des trajets par heure
 
 @app.post("/analytics/avg_duration_by_hour")
-def avg_duration_by_hour(db: Session = Depends(get_db)):
+def avg_duration_by_hour(db: Session = Depends(get_db), user: str = Depends(verify_token)):
     
     sql = text("""
-        SELECT 
-            EXTRACT(HOUR FROM pickup_hour) AS hour, 
-            AVG(duration_minutes) AS average_duration
+            SELECT
+        pickup_hour AS hour,
+        AVG(trip_duration) AS average_duration
         FROM silver_table
-        GROUP BY hour
-        ORDER BY hour ASC
+        GROUP BY pickup_hour
+        ORDER BY pickup_hour ASC;
     """)
     
     result_data = db.execute(sql)
@@ -98,18 +98,18 @@ def avg_duration_by_hour(db: Session = Depends(get_db)):
 # Comparaison durée moyenne par type de paiement
 
 @app.post("/analytics/payment_analysis")
-def payment_analysis(db: Session = Depends(get_db)):
+def payment_analysis(db: Session = Depends(get_db), user: str = Depends(verify_token)):
     
     sql = text("""
-        SELECT 
-            payment_type, 
-            COUNT(*) AS total_trips, 
-            AVG(duration_minutes) AS average_duration
-        FROM taxi_trips_silver
-        GROUP BY payment_type
+        SELECT
+    payment_type,
+    COUNT(*) AS total_trips,
+    AVG(trip_duration) AS average_duration
+    FROM silver_table
+    GROUP BY payment_type;
     """)
     
-    result_data = db.execute(sql)
+    result_data = db.execute(sql).fetchall()
     
     final_results = []
     for row in result_data:

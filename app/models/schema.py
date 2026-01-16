@@ -28,6 +28,7 @@ class User_request(BaseModel):
     Airport_fee : float
     pickup_hour : int
     month : int
+    payment_type : int
 
 
 class output_predict(BaseModel):
