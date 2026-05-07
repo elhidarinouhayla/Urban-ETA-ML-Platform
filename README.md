@@ -4,6 +4,7 @@
 Smart LogiTrack est une solution complète de type "Control Tower" logistique. L'objectif est de prédire le temps d'arrivée (Estimated Time of Arrival - ETA) des taxis urbains en utilisant un pipeline de données distribué et du Machine Learning.
 
 
+
 ## Objectifs du ProjetPipeline 
 
 - ETL Distribué : Traitement de gros volumes de données avec PySpark
